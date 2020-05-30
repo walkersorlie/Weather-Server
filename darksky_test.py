@@ -1,5 +1,3 @@
-from darksky.api import DarkSky, DarkSkyAsync
-from darksky.types import languages, units, weather
 import json
 import requests
 import os
@@ -12,8 +10,7 @@ def unix_time_to_local_time(unix_time):
     return utc_time.astimezone()
 
 
-if not os.path.isfile('/home/walker/Documents/Projects/weather_server/darksky_test_info.json'):
-    # API_KEY = "5d6c6c11b5e855d01cd7331b60f33f3a"
+if not os.path.isfile('darksky_test_info.json'):
     API_KEY = os.environ['DARKSKY_API_KEY']
     latitude = 44.0583333
     longitude = -121.3141667
@@ -76,39 +73,3 @@ Next 6 hours
 #     print(local_time)
 #     print(local_time.strftime("%Y-%m-%d %H:%M:%S (%Z)"))
 #
-
-
-
-"""
-darksky = DarkSky(API_KEY)
-
-latitude = 44.0583333
-longitude = -121.3141667
-forecast = darksky.get_forecast(
-    latitude,
-    longitude,
-    extend=False, # default `False`
-    lang=languages.ENGLISH, # default `ENGLISH`
-    values_units=units.US, # default `auto`
-    exclude=[weather.MINUTELY, weather.ALERTS],
-    timezone='America/Los_Angeles'
-)
-
-# with open('/home/walker/Documents/Projects/weather_server/darksky_test_info.json', 'w') as file:
-#     file.write(forecast)
-
-# with open('test_info.json', 'r') as myfile:
-#     data = myfile.read()
-
-print(forecast.timezone)
-json_test = ""
-for item in forecast.daily:
-    print(item)
-    json_test = json.dumps(item)
-    print(item.summary)
-
-print(forecast.currently.temperature)
-print(forecast.currently.summary)
-print(json_test)
-print(forecast.daily)
-"""
