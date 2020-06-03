@@ -1,0 +1,20 @@
+print(unix_timestamp_to_local_time(day['time']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+print(datetime.fromtimestamp(day['time']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+print("High temp: %s " % data['daily']['data'][x]['temperatureHigh'])
+print("High temp time: %s " % unix_time_to_local_time(data['daily']['data'][x]['temperatureHighTime']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+print("Min temp: %s " % data['daily']['data'][x]['temperatureMin'])
+print("Min temp time: %s " % unix_time_to_local_time(data['daily']['data'][x]['temperatureMinTime']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+print("Max temp: %s " % data['daily']['data'][x]['temperatureMax'])
+print("Max temp time: %s " % unix_time_to_local_time(data['daily']['data'][x]['temperatureMaxTime']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+precip_probability = data['daily']['data'][x]['precipProbability'] * 100
+print(f"Precip probability: {precip_probability}%")
+print("Precip intensity (inches of water per hour): %s " % data['daily']['data'][x]['precipIntensity'])
+if data['daily']['data'][x]['precipIntensity'] > 0:
+    print("Precip type: %s " % data['daily']['data'][x]['precipType'])
+
+local_time = unix_timestamp_to_local_time(data['daily']['data'][x]['time'])
+print("Date: %s " % local_time.strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+print("Date: %s " % data['daily']['data'][x]['time'])
+utc_datetime = datetime.fromtimestamp(data['daily']['data'][x]['time'], timezone.utc)
+print("Date UTC: %s " % utc_datetime.strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+print("Date UTC: %s " % local_timestamp_to_utc_timestamp(data['daily']['data'][x]['time']))
