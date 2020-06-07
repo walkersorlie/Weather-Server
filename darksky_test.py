@@ -14,8 +14,7 @@ def local_timestamp_to_utc_timestamp(local_timestamp):
     utc_datetime = datetime.fromtimestamp(local_timestamp, timezone.utc)
     return utc_datetime.astimezone(timezone.utc).replace(tzinfo=None).timestamp()
 
-
-if not os.path.isfile('darksky_test_info.json'):
+def make_api_request():
     API_KEY = os.environ['DARKSKY_API_KEY']
     latitude = 44.0583333
     longitude = -121.3141667
@@ -24,7 +23,12 @@ if not os.path.isfile('darksky_test_info.json'):
     # ?exclude=currently,minutely,hourly,alerts,flags
     url = f"https://api.darksky.net/forecast/{API_KEY}/{latitude},{longitude}"
 
-    response = requests.get(url, headers=headers)
+    return requests.get(url, headers=headers)
+
+
+if not os.path.isfile('darksky_test_info.json'):
+    response = make_api_request()
+
     with open('darksky_test_info.json', 'w') as file:
         file.write(json.dumps(response.json()))
 
@@ -34,19 +38,19 @@ with open('darksky_test_info.json', 'r') as myfile:
 
 
 
-data_point_currently = data['currently']
-# print(json.dumps(data_point_currently, indent=2))
-# print(unix_timestamp_to_local_time(data_point_currently['time']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
+user_password = os.environ['MONGODB_ATLAS_USER_PASSWORD']
+db_url = f'mongodb+srv://walker:{user_password}@weather-server-y8sjh.mongodb.net/test?retryWrites=true&w=majority'
 
-
-db_url = 'mongodb://localhost:27017'
+# db_url = 'mongodb://localhost:27017'
 client = MongoClient(db_url)
-
 db = client.weather_server
-collection_currently = db.currently_weather_collection
-document_currently = data_point_currently
-document_id_currently = collection_currently.insert_one(document_currently).inserted_id
-# client.close()
+
+
+collection_currently = db.collection_weather_currently
+
+data_point_currently = data['currently']
+data_point_currently['time'] = local_timestamp_to_utc_timestamp(data_point_currently['time'])
+document_id_currently = collection_currently.insert_one(data_point_currently).inserted_id
 
 
 """
@@ -62,7 +66,8 @@ for day in data['daily']['data']:
 
 
 collection_daily = db.collection_weather_daily
-# result = collection_daily.insert_many(next_three_days)
+collection_daily_result = collection_daily.insert_many(days_data_block)
+
 
 dt = datetime.now().astimezone()
 # print(dt.strftime("%Y-%m-%d %H:%M:%S (%Z)"))
@@ -87,4 +92,18 @@ for hour in data['hourly']['data']:
 
 
 collection_hourly = db.collection_weather_hourly
-# collection_hourly_result = collection_hourly.insert_many(hours_data_block)
+collection_hourly_result = collection_hourly.insert_many(hours_data_block)
+
+
+"""
+Alerts data block, if present
+"""
+if 'alerts' in data:
+    print(json_dumps(data['alerts'], indent=2))
+    data['alerts']['time'] = local_timestamp_to_utc_timestamp(data['alerts']['time'])
+
+    collection_alerts = db.collection_alerts
+    collection_alerts_result = collection_alerts.insert_one(data['alerts']).inserted_id
+
+
+client.close()
