@@ -8,17 +8,18 @@ package com.walkersorlie.restservice;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-
 /**
  *
  * @author Walker Sorlie
  */
-@Document
+@Document(collection = "collection_weather_currently")
 public class CurrentlyDataBlock {
-    
+
+    //required 
+    private final long requestTime;
+
     @Id
-    private final long id;
+    private final String id;
     private final long time;
     private final String summary;
     private final int nearestStormDistance;
@@ -37,9 +38,11 @@ public class CurrentlyDataBlock {
     private final double uvIndex;
     private final double visibility;
     private final double ozone;
-    
-    
-     private CurrentlyDataBlock(Builder builder) {
+
+    private CurrentlyDataBlock(Builder builder) {
+        //required 
+        this.requestTime = builder.requestTime;
+
         this.id = builder.id;
         this.time = builder.time;
         this.summary = builder.summary;
@@ -59,94 +62,99 @@ public class CurrentlyDataBlock {
         this.uvIndex = builder.uvIndex;
         this.visibility = builder.visibility;
         this.ozone = builder.ozone;
-     }
-     
-     public long getId() {
-         return this.id;
-     }
-     
-     public long getTime() {
-         return this.time;
-     }
-     
-      
-     public String getFormattedTime() {
-         return "";
-     }
-     
-     public String getSummary() {
-         return this.summary;
-     }
-     
-     public int getNearestStormDistance() {
-         return this.nearestStormDistance;
-     }
-     
-     public int getNearestStormBearing() {
-         return this.nearestStormBearing;             
-     }
-     
-     public double getPrecipIntensity() {
-         return this.precipIntensity;
-     }
-     
-     public double getPrecipProbability() {
-         return this.precipProbability;
-     }
-     
-     public double getTemperature() {
-         return this.temperature;
-     }
-     
-     public double getApparentTemperature() {
-         return this.apparentTemperature;
-     }
-     
-     public double getDewPoint() {
-         return this.dewPoint;
-     }
-     
-     public double getHumidity() {
-         return this.humidity;
-     }
-     
-     public double getPressure() {
-         return this.pressure;
-     }
-     
-     public double getWindSpeed() {
-         return this.windSpeed;
-     }
-    
-     public double getWindGust() {
-         return this.windGust;
-     }
-     
-     public double getWindBearing() {
-         return this.windBearing;
-     }
-     
-     public double getCloudCover() {
-         return this.cloudCover;
-     }
-     
-     public double getUvIndex() {
-         return this.uvIndex;
-     }
-     
-     public double getVisibility() {
-         return this.visibility;
-     }
-     
-     public double getOzone() {
-         return this.ozone;
-     }
-     
-     
-     public static class Builder {
-         
-        private long id;
-        private final long time;    // required
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public long getRequestTime() {
+        return this.requestTime;
+    }
+
+    public long getTime() {
+        return this.time;
+    }
+
+    public String getFormattedTime() {
+        return "";
+    }
+
+    public String getSummary() {
+        return this.summary;
+    }
+
+    public int getNearestStormDistance() {
+        return this.nearestStormDistance;
+    }
+
+    public int getNearestStormBearing() {
+        return this.nearestStormBearing;
+    }
+
+    public double getPrecipIntensity() {
+        return this.precipIntensity;
+    }
+
+    public double getPrecipProbability() {
+        return this.precipProbability;
+    }
+
+    public double getTemperature() {
+        return this.temperature;
+    }
+
+    public double getApparentTemperature() {
+        return this.apparentTemperature;
+    }
+
+    public double getDewPoint() {
+        return this.dewPoint;
+    }
+
+    public double getHumidity() {
+        return this.humidity;
+    }
+
+    public double getPressure() {
+        return this.pressure;
+    }
+
+    public double getWindSpeed() {
+        return this.windSpeed;
+    }
+
+    public double getWindGust() {
+        return this.windGust;
+    }
+
+    public double getWindBearing() {
+        return this.windBearing;
+    }
+
+    public double getCloudCover() {
+        return this.cloudCover;
+    }
+
+    public double getUvIndex() {
+        return this.uvIndex;
+    }
+
+    public double getVisibility() {
+        return this.visibility;
+    }
+
+    public double getOzone() {
+        return this.ozone;
+    }
+
+    public static class Builder {
+
+        // required
+        private long requestTime;
+
+        private String id;
+        private long time;
         private String summary;
         private int nearestStormDistance;
         private int nearestStormBearing;
@@ -165,104 +173,111 @@ public class CurrentlyDataBlock {
         private double visibility;
         private double ozone;
 
-        
-        public Builder(long time) {
-            this.time = time;
+        public Builder() {
         }
-        
-       public Builder setId(long id) {
-         this.id = id;
-         return this;
-       }
-       
-       public Builder setSummary(String summary) {
-           this.summary = summary;
-           return this;
-       }
-       
-       public Builder setNearestStormDistance(int distance) {
-           this.nearestStormDistance = distance;
-           return this;
-       }
-       
-       public Builder setNearestStormBearing(int bearing) {
-           this.nearestStormBearing = bearing;
-           return this;
-       }
-       
-       public Builder setPrecipIntensity(double intensity) {
-           this.precipIntensity = intensity;
-           return this;
-       }
-       
-       public Builder setPrecipProbability(double probability) {
-           this.precipProbability = probability;
-           return this;
-       }
-       
-       public Builder setTemperature(double temperature) {
-           this.temperature = temperature;
-           return this;
-       }
-       
-       public Builder setApparentTemperature(double apparentTemperature) {
-           this.apparentTemperature = apparentTemperature;
-           return this;
-       }
-       
-       public Builder setdewPoint(double dewPoint) {
-           this.dewPoint = dewPoint;
-           return this;
-       }
-       
-       public Builder setHumidity(double humidity) {
-           this.humidity = humidity;
-           return this;
-       }
-       
-       public Builder setPressure(double pressure) {
-           this.pressure = pressure;
-           return this;
-       }
-       
-       public Builder setWindSpeed(double windSpeed) {
-           this.windSpeed = windSpeed;
-           return this;
-       }
-       
-       public Builder setWindGust(double windGust) {
-           this.windGust = windGust;
-           return this;
-       }
-       
-       public Builder setWindBearing(double windBearing) {
-           this.windBearing = windBearing;
-           return this;
-       }
-       
-       public Builder setCloudCover(double cloudCover) {
-           this.cloudCover = cloudCover;
-           return this;
-       }
-       
-       public Builder setUvIndex(double uvIndex) {
-           this.uvIndex = uvIndex;
-           return this;
-       }
-       
-       public Builder setVisibility(double visibility) {
-           this.visibility = visibility;
-           return this;
-       }
-       
-       public Builder setOzone(double ozone) {
-           this.ozone = ozone;
-           return this;
-       }
-              
-       
-       public CurrentlyDataBlock build() {
-         return new CurrentlyDataBlock(this);
-       }
-     }
+
+        public Builder setRequestTime(long requestTime) {
+            this.requestTime = requestTime;
+            return this;
+        }
+
+        public Builder setId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setTime(long time) {
+            this.time = time;
+            return this;
+        }
+
+        public Builder setSummary(String summary) {
+            this.summary = summary;
+            return this;
+        }
+
+        public Builder setNearestStormDistance(int distance) {
+            this.nearestStormDistance = distance;
+            return this;
+        }
+
+        public Builder setNearestStormBearing(int bearing) {
+            this.nearestStormBearing = bearing;
+            return this;
+        }
+
+        public Builder setPrecipIntensity(double intensity) {
+            this.precipIntensity = intensity;
+            return this;
+        }
+
+        public Builder setPrecipProbability(double probability) {
+            this.precipProbability = probability;
+            return this;
+        }
+
+        public Builder setTemperature(double temperature) {
+            this.temperature = temperature;
+            return this;
+        }
+
+        public Builder setApparentTemperature(double apparentTemperature) {
+            this.apparentTemperature = apparentTemperature;
+            return this;
+        }
+
+        public Builder setdewPoint(double dewPoint) {
+            this.dewPoint = dewPoint;
+            return this;
+        }
+
+        public Builder setHumidity(double humidity) {
+            this.humidity = humidity;
+            return this;
+        }
+
+        public Builder setPressure(double pressure) {
+            this.pressure = pressure;
+            return this;
+        }
+
+        public Builder setWindSpeed(double windSpeed) {
+            this.windSpeed = windSpeed;
+            return this;
+        }
+
+        public Builder setWindGust(double windGust) {
+            this.windGust = windGust;
+            return this;
+        }
+
+        public Builder setWindBearing(double windBearing) {
+            this.windBearing = windBearing;
+            return this;
+        }
+
+        public Builder setCloudCover(double cloudCover) {
+            this.cloudCover = cloudCover;
+            return this;
+        }
+
+        public Builder setUvIndex(double uvIndex) {
+            this.uvIndex = uvIndex;
+            return this;
+        }
+
+        public Builder setVisibility(double visibility) {
+            this.visibility = visibility;
+            return this;
+        }
+
+        public Builder setOzone(double ozone) {
+            this.ozone = ozone;
+            return this;
+        }
+
+        public CurrentlyDataBlock build() {
+            return new CurrentlyDataBlock(this);
+        }
+    }
 }

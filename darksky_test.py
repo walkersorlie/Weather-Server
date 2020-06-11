@@ -39,7 +39,7 @@ with open('darksky_test_info.json', 'r') as myfile:
 
 
 user_password = os.environ['MONGODB_ATLAS_USER_PASSWORD']
-db_url = f'mongodb+srv://walker:{user_password}@weather-server-y8sjh.mongodb.net/test?retryWrites=true&w=majority'
+db_url = f'mongodb+srv://walker:{user_password}@weather-server-y8sjh.mongodb.net/weather_server?retryWrites=true&w=majority'
 
 # db_url = 'mongodb://localhost:27017'
 client = MongoClient(db_url)
