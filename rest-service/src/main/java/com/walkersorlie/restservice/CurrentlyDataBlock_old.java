@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Walker Sorlie
  */
 @Document(collection = "collection_weather_currently")
-public class CurrentlyDataBlock {
+public class CurrentlyDataBlock_old {
 
     //required 
     private final long requestTime;
@@ -39,7 +39,7 @@ public class CurrentlyDataBlock {
     private final double visibility;
     private final double ozone;
 
-    private CurrentlyDataBlock(Builder builder) {
+    private CurrentlyDataBlock_old(Builder builder) {
         //required 
         this.requestTime = builder.requestTime;
 
@@ -276,8 +276,8 @@ public class CurrentlyDataBlock {
             return this;
         }
 
-        public CurrentlyDataBlock build() {
-            return new CurrentlyDataBlock(this);
+        public CurrentlyDataBlock_old build() {
+            return new CurrentlyDataBlock_old(this);
         }
     }
 }
