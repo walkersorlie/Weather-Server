@@ -5,6 +5,13 @@
  */
 package com.walkersorlie.restservice.DataBlock;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import static java.time.ZoneId.systemDefault;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -72,7 +79,23 @@ public class CurrentlyDataBlock {
     }
 
     public String getFormattedTime() {
-        return "";
+        
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss ('z')");
+        
+        Instant instant = Instant.ofEpochSecond(this.time);
+        ZonedDateTime localTime = instant.atZone(ZoneId.systemDefault());
+        
+        System.out.println(instant.toString());
+        System.out.println(localTime);
+        System.out.println(localTime.format(dateFormat));
+//        Date date = utcFormat.parse("2012-08-15T22:56:02.038Z");
+//
+//        DateFormat pstFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ('z')");
+//        pstFormat.setTimeZone(TimeZone.getTimeZone("PST"));
+//
+//        System.out.println(pstFormat.format(date));
+        
+        return localTime.format(dateFormat);
     }
 
     public String getSummary() {

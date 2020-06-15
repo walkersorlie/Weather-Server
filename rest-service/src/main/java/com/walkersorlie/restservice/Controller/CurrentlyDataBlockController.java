@@ -67,6 +67,6 @@ public class CurrentlyDataBlockController {
     }
 
     private CurrentlyDataBlock getLatestCurrentlyDataBlock() {
-        return repository.findFirstByTimeLessThanEqual(System.currentTimeMillis() / 1000L, Sort.by(DESC, "time"));
+        return repository.findFirstByTimeLessThanEqual(System.currentTimeMillis(), Sort.by(DESC, "time"));
     }
 }
