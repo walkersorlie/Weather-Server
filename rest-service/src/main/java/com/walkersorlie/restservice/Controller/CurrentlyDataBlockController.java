@@ -59,7 +59,7 @@ public class CurrentlyDataBlockController {
 
     @GetMapping("/currently_collection")
     public CollectionModel<EntityModel<CurrentlyDataBlock>> all() {
-        List<EntityModel<CurrentlyDataBlock>> currentlyBlockDocuments = repository.findAll().stream()
+        List<EntityModel<CurrentlyDataBlock>> currentlyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
 
@@ -67,6 +67,6 @@ public class CurrentlyDataBlockController {
     }
 
     private CurrentlyDataBlock getLatestCurrentlyDataBlock() {
-        return repository.findFirstByTimeLessThanEqual(System.currentTimeMillis(), Sort.by(DESC, "time"));
+        return repository.findFirstByTimeLessThanEqual(Instant.now().getEpochSecond(), Sort.by(DESC, "time"));
     }
 }

@@ -3,6 +3,7 @@ import requests
 import os
 from datetime import datetime, timezone
 from pymongo import MongoClient
+import pytz
 
 
 
@@ -12,7 +13,11 @@ def unix_timestamp_to_local_time(unix_timestamp):
 
 def local_timestamp_to_utc_timestamp(local_timestamp):
     utc_datetime = datetime.fromtimestamp(local_timestamp, timezone.utc)
-    return utc_datetime.astimezone(timezone.utc).replace(tzinfo=None).timestamp()
+    utc_dt = datetime.fromtimestamp(local_timestamp, pytz.utc)
+    # return utc_datetime.astimezone(timezone.utc).replace(tzinfo=None).timestamp()
+    # print(utc_dt)
+    # print(utc_dt.timestamp())
+    return utc_dt.timestamp()
 
 def make_api_request():
     API_KEY = os.environ['DARKSKY_API_KEY']
@@ -51,6 +56,7 @@ collection_currently = db.collection_weather_currently
 data_point_currently = data['currently']
 data_point_currently['time'] = local_timestamp_to_utc_timestamp(data_point_currently['time'])
 document_id_currently = collection_currently.insert_one(data_point_currently).inserted_id
+
 
 
 """

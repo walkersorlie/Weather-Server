@@ -5,6 +5,7 @@ import com.walkersorlie.restservice.Assembler.HourlyDataBlockModelAssembler;
 import com.walkersorlie.restservice.DataBlock.HourlyDataBlock;
 import com.walkersorlie.restservice.Exception.HourlyDataBlockNotFoundException;
 import com.walkersorlie.restservice.Repository.HourlyDataBlockRepository;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Sort;
@@ -49,7 +50,7 @@ public class HourlyDataBlockController {
 
     @GetMapping("/hourly_collection")
     public CollectionModel<EntityModel<HourlyDataBlock>> all() {
-        List<EntityModel<HourlyDataBlock>> hourlyBlockDocuments = repository.findAll().stream()
+        List<EntityModel<HourlyDataBlock>> hourlyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
@@ -58,7 +59,7 @@ public class HourlyDataBlockController {
     }
 
     private HourlyDataBlock getLatestHourlyDataBlock() {
-        return repository.findFirstByTimeLessThanEqual(System.currentTimeMillis() / 1000L, Sort.by(DESC, "time"));
+        return repository.findFirstByTimeLessThanEqual(Instant.now().getEpochSecond(), Sort.by(DESC, "time"));
     }
 
 }

@@ -4,6 +4,7 @@ import com.walkersorlie.restservice.Assembler.DailyDataBlockModelAssembler;
 import com.walkersorlie.restservice.DataBlock.DailyDataBlock;
 import com.walkersorlie.restservice.Exception.DailyDataBlockNotFoundException;
 import com.walkersorlie.restservice.Repository.DailyDataBlockRepository;
+import java.time.Instant;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +49,7 @@ public class DailyDataBlockController {
 
     @GetMapping("/daily_collection")
     public CollectionModel<EntityModel<DailyDataBlock>> all() {
-        List<EntityModel<DailyDataBlock>> dailyBlockDocuments = repository.findAll().stream()
+        List<EntityModel<DailyDataBlock>> dailyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
@@ -57,6 +58,6 @@ public class DailyDataBlockController {
     }
 
     private DailyDataBlock getLatestDailyDataBlock() {
-        return repository.findFirstByTimeLessThanEqual(System.currentTimeMillis() / 1000L, Sort.by(DESC, "time"));
+        return repository.findFirstByTimeLessThanEqual(Instant.now().getEpochSecond(), Sort.by(DESC, "time"));
     }
 }

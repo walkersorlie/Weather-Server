@@ -80,21 +80,11 @@ public class CurrentlyDataBlock {
 
     public String getFormattedTime() {
         
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss ('z')");
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss (z)");
         
         Instant instant = Instant.ofEpochSecond(this.time);
         ZonedDateTime localTime = instant.atZone(ZoneId.systemDefault());
-        
-        System.out.println(instant.toString());
-        System.out.println(localTime);
-        System.out.println(localTime.format(dateFormat));
-//        Date date = utcFormat.parse("2012-08-15T22:56:02.038Z");
-//
-//        DateFormat pstFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ('z')");
-//        pstFormat.setTimeZone(TimeZone.getTimeZone("PST"));
-//
-//        System.out.println(pstFormat.format(date));
-        
+
         return localTime.format(dateFormat);
     }
 

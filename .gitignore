@@ -1,3 +1,6 @@
+# Local files
+darksky_test_info.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -152,4 +155,3 @@ target/
 /rest-service/nbdist/
 /rest-service/.nb-gradle/
 build/
-

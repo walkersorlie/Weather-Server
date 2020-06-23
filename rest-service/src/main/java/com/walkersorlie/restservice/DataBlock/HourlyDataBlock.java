@@ -1,6 +1,10 @@
 
 package com.walkersorlie.restservice.DataBlock;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -61,6 +65,15 @@ public class HourlyDataBlock {
 
     public long getTime() {
         return time;
+    }
+    
+    public String getFormattedTime() {
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss (z)");
+        
+        Instant instant = Instant.ofEpochSecond(this.time);
+        ZonedDateTime localTime = instant.atZone(ZoneId.systemDefault());
+
+        return localTime.format(dateFormat);
     }
 
     public String getSummary() {
