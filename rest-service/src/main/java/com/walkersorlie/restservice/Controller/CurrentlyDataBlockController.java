@@ -7,12 +7,23 @@ import com.walkersorlie.restservice.Repository.CurrentlyDataBlockRepository;
 import com.walkersorlie.restservice.DataBlock.CurrentlyDataBlock;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import static org.springframework.hateoas.MediaTypes.ALPS_JSON_VALUE;
+import static org.springframework.hateoas.mediatype.PropertyUtils.getExposedProperties;
+import org.springframework.hateoas.mediatype.alps.Alps;
+import static org.springframework.hateoas.mediatype.alps.Alps.doc;
+import org.springframework.hateoas.mediatype.alps.Descriptor;
+import org.springframework.hateoas.mediatype.alps.Ext;
+import org.springframework.hateoas.mediatype.alps.Format;
+import org.springframework.hateoas.mediatype.alps.Type;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +39,16 @@ public class CurrentlyDataBlockController {
 
     private final CurrentlyDataBlockRepository repository;
     private final CurrentlyDataBlockModelAssembler assembler;
+    public static CurrentlyDataBlock LATEST;
 
     CurrentlyDataBlockController(CurrentlyDataBlockRepository repository, CurrentlyDataBlockModelAssembler assembler) {
         this.repository = repository;
         this.assembler = assembler;
+        
+        LATEST = getLatestCurrentlyDataBlock();
     }
 
-    @GetMapping("/currently_collection/latest")
+    @GetMapping("/api/currently_collection/latest")
     public EntityModel<CurrentlyDataBlock> latest() {
 //        long unixTime = System.currentTimeMillis() / 1000L;
 //        System.out.println(Instant.ofEpochSecond(unixTime));
@@ -45,10 +59,10 @@ public class CurrentlyDataBlockController {
 //        Instant instant = Instant.ofEpochSecond(latest.getTime());
 //        System.out.println(instant);
 
-        return assembler.toModelLatest(getLatestCurrentlyDataBlock());
+        return assembler.toModel(LATEST);
     }
 
-    @GetMapping("currently_collection/{id}")
+    @GetMapping("/api/currently_collection/{id}")
     public EntityModel<CurrentlyDataBlock> specific(@PathVariable String id) {
 
         CurrentlyDataBlock result = repository.findById(id)
@@ -57,16 +71,46 @@ public class CurrentlyDataBlockController {
         return assembler.toModel(result);
     }
 
-    @GetMapping("/currently_collection")
+    @GetMapping("/api/currently_collection")
     public CollectionModel<EntityModel<CurrentlyDataBlock>> all() {
         List<EntityModel<CurrentlyDataBlock>> currentlyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
-
+        
+        List<EntityModel<CurrentlyDataBlock>> currently = repository.findAllBy(PageRequest.of(0, 5)).stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+        
         return CollectionModel.of(currentlyBlockDocuments, linkTo(methodOn(CurrentlyDataBlockController.class).all()).withSelfRel());
     }
 
     private CurrentlyDataBlock getLatestCurrentlyDataBlock() {
         return repository.findFirstByTimeLessThanEqual(Instant.now().getEpochSecond(), Sort.by(DESC, "time"));
+    }
+    
+
+    @GetMapping(value = "/api/currently_collection/profile", produces = ALPS_JSON_VALUE)
+    public Alps profile() {
+        return Alps.alps() 
+                .doc(doc()
+                        .href("https://example.org/samples/full/doc.html")
+                        .value("value goes here") 
+                        .format(Format.TEXT)
+                        .build()) 
+                .descriptor(getExposedProperties(CurrentlyDataBlock.class).stream()
+                        .map(property -> Descriptor.builder()
+                        .id("class field [" + property.getName() + "]") 
+                        .name(property.getName()) 
+                        .type(Type.SEMANTIC) 
+                        .ext(Ext.builder() 
+                                .id("ext [" + property.getName() + "]")
+                                .href("https://example.org/samples/ext/" + property.getName())
+                                .value("value goes here") 
+                                .build()) 
+                        .rt("rt for [" + property.getName() + "]") 
+                        .descriptor(Collections.singletonList(Descriptor.builder().id("embedded").build()))
+                        .build()) //
+                        .collect(Collectors.toList()))
+                .build();
     }
 }

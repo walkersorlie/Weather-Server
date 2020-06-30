@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -275,4 +276,12 @@ public class DailyDataBlock {
     public long getApparentTemperatureMaxTime() {
         return apparentTemperatureMaxTime;
     }  
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DailyDataBlock compareBlock = (DailyDataBlock) o;
+        return Objects.equals(this.id, compareBlock.id);
+    }
 }

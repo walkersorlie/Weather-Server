@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import static java.time.ZoneId.systemDefault;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -154,5 +155,13 @@ public class CurrentlyDataBlock {
 
     public double getOzone() {
         return this.ozone;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CurrentlyDataBlock compareBlock = (CurrentlyDataBlock) o;
+        return Objects.equals(this.id, compareBlock.id);
     }
 }

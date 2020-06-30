@@ -23,16 +23,14 @@ public class CurrentlyDataBlockModelAssembler implements RepresentationModelAsse
 
     @Override
     public EntityModel<CurrentlyDataBlock> toModel(CurrentlyDataBlock currentlyDataBlock) {
-
-        return EntityModel.of(currentlyDataBlock,
+        if (currentlyDataBlock.equals(CurrentlyDataBlockController.LATEST)) {
+            return EntityModel.of(currentlyDataBlock,
                 linkTo(methodOn(CurrentlyDataBlockController.class).specific(currentlyDataBlock.getId())).withSelfRel(),
-                linkTo(methodOn(CurrentlyDataBlockController.class).all()).withRel("currently_collection"));
-    }
-
-    public EntityModel<CurrentlyDataBlock> toModelLatest(CurrentlyDataBlock currentlyDataBlock) {
-
+                linkTo(methodOn(CurrentlyDataBlockController.class).all()).withRel("currently_collection"),
+                linkTo(methodOn(CurrentlyDataBlockController.class).latest()).withSelfRel());
+        }
+        
         return EntityModel.of(currentlyDataBlock,
-                linkTo(methodOn(CurrentlyDataBlockController.class).latest()).withSelfRel(),
                 linkTo(methodOn(CurrentlyDataBlockController.class).specific(currentlyDataBlock.getId())).withSelfRel(),
                 linkTo(methodOn(CurrentlyDataBlockController.class).all()).withRel("currently_collection"));
     }

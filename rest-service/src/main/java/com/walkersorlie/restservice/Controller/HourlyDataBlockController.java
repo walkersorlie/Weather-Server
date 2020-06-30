@@ -34,12 +34,12 @@ public class HourlyDataBlockController {
         this.assembler = assembler;
     }
 
-    @GetMapping("/hourly_collection/latest")
+    @GetMapping("/api/hourly_collection/latest")
     public EntityModel<HourlyDataBlock> latest() {
         return assembler.toModelLatest(getLatestHourlyDataBlock());
     }
 
-    @GetMapping("hourly_collection/{id}")
+    @GetMapping("/api/hourly_collection/{id}")
     public EntityModel<HourlyDataBlock> specific(@PathVariable String id) {
 
         HourlyDataBlock result = repository.findById(id)
@@ -48,7 +48,7 @@ public class HourlyDataBlockController {
         return assembler.toModel(result);
     }
 
-    @GetMapping("/hourly_collection")
+    @GetMapping("/api/hourly_collection")
     public CollectionModel<EntityModel<HourlyDataBlock>> all() {
         List<EntityModel<HourlyDataBlock>> hourlyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)

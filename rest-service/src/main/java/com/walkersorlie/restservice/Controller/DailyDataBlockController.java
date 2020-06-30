@@ -33,12 +33,12 @@ public class DailyDataBlockController {
         this.assembler = assembler;
     }
 
-    @GetMapping("/daily_collection/latest")
+    @GetMapping("/api/daily_collection/latest")
     public EntityModel<DailyDataBlock> latest() {
         return assembler.toModelLatest(getLatestDailyDataBlock());
     }
 
-    @GetMapping("daily_collection/{id}")
+    @GetMapping("/api/daily_collection/{id}")
     public EntityModel<DailyDataBlock> specific(@PathVariable String id) {
 
         DailyDataBlock result = repository.findById(id)
@@ -47,7 +47,7 @@ public class DailyDataBlockController {
         return assembler.toModel(result);
     }
 
-    @GetMapping("/daily_collection")
+    @GetMapping("/api/daily_collection")
     public CollectionModel<EntityModel<DailyDataBlock>> all() {
         List<EntityModel<DailyDataBlock>> dailyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
