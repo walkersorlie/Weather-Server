@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import static org.springframework.data.domain.Sort.Direction.DESC;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import static org.springframework.hateoas.MediaTypes.ALPS_JSON_VALUE;
+import org.springframework.hateoas.PagedModel;
 import static org.springframework.hateoas.mediatype.PropertyUtils.getExposedProperties;
 import org.springframework.hateoas.mediatype.alps.Alps;
 import static org.springframework.hateoas.mediatype.alps.Alps.doc;
@@ -26,6 +29,9 @@ import org.springframework.hateoas.mediatype.alps.Format;
 import org.springframework.hateoas.mediatype.alps.Type;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,7 +87,25 @@ public class CurrentlyDataBlockController {
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
-        return CollectionModel.of(currentlyBlockDocuments, linkTo(methodOn(CurrentlyDataBlockController.class).all()).withSelfRel());
+        return CollectionModel.of(currently, linkTo(methodOn(CurrentlyDataBlockController.class).all()).withSelfRel());
+    }
+    
+    @GetMapping("/api/currently_collection_pages")
+    public PagedModel<EntityModel<CurrentlyDataBlock>> allPages(Pageable pageable, PagedResourcesAssembler<CurrentlyDataBlock> pagedAssembler) 
+    {
+        Page<CurrentlyDataBlock> page = repository.findAllBy(pageable);
+        
+        CollectionModel<EntityModel<CurrentlyDataBlock>> coll = assembler.toCollectionModel(page);
+        PagedModel.PageMetadata metadata = new PagedModel.PageMetadata((long)page.getSize(), (long)page.getNumber(), page.getTotalElements());
+         
+//        PagedModel<EntityModel<CurrentlyDataBlock>> pagedModel = PagedModel.of(coll.iterator(),metadata, 
+//                linkTo(methodOn(CurrentlyDataBlockController.class).allPagesTest(pageable, pagedAssembler)).withSelfRel());
+        
+
+        PagedModel<EntityModel<CurrentlyDataBlock>> pagedModel = pagedAssembler.toModel(page, assembler, 
+                linkTo(methodOn(CurrentlyDataBlockController.class).allPages(pageable, pagedAssembler)).withSelfRel());
+         
+        return pagedModel;
     }
 
     private CurrentlyDataBlock getLatestCurrentlyDataBlock() {

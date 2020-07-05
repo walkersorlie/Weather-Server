@@ -8,10 +8,14 @@ import com.walkersorlie.restservice.Repository.HourlyDataBlockRepository;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import static org.springframework.data.domain.Sort.Direction.DESC;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,15 +32,17 @@ public class HourlyDataBlockController {
     
     private final HourlyDataBlockRepository repository;
     private final HourlyDataBlockModelAssembler assembler;
+    public static HourlyDataBlock LATEST;
 
     HourlyDataBlockController(HourlyDataBlockRepository repository, HourlyDataBlockModelAssembler assembler) {
         this.repository = repository;
         this.assembler = assembler;
+        LATEST = getLatestHourlyDataBlock();
     }
 
     @GetMapping("/api/hourly_collection/latest")
     public EntityModel<HourlyDataBlock> latest() {
-        return assembler.toModelLatest(getLatestHourlyDataBlock());
+        return assembler.toModel(LATEST);
     }
 
     @GetMapping("/api/hourly_collection/{id}")
@@ -54,10 +60,21 @@ public class HourlyDataBlockController {
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
-        System.out.println(hourlyBlockDocuments.size());
         return CollectionModel.of(hourlyBlockDocuments, linkTo(methodOn(HourlyDataBlockController.class).all()).withSelfRel());
     }
 
+    
+    @GetMapping("/api/hourly_collection_pages")
+    public PagedModel<EntityModel<HourlyDataBlock>> allPages(Pageable pageable, PagedResourcesAssembler<HourlyDataBlock> pagedAssembler) 
+    {
+        Page<HourlyDataBlock> page = repository.findAllBy(pageable);
+        PagedModel<EntityModel<HourlyDataBlock>> pagedModel = pagedAssembler.toModel(page, assembler, 
+                linkTo(methodOn(HourlyDataBlockController.class).allPages(pageable, pagedAssembler)).withSelfRel());
+         
+        return pagedModel;
+    }
+    
+    
     private HourlyDataBlock getLatestHourlyDataBlock() {
         return repository.findFirstByTimeLessThanEqual(Instant.now().getEpochSecond(), Sort.by(DESC, "time"));
     }

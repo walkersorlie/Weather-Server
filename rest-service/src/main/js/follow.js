@@ -25,6 +25,7 @@ module.exports = function follow(api, rootPath, relArray) {
 					path: response.entity._links[rel].href
 				});
 			} else {
+                                console.log(response.entity)
 				return api({
 					method: 'GET',
 					path: response.entity._links[rel].href,

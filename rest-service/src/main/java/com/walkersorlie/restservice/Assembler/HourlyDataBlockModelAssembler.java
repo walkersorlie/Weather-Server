@@ -3,6 +3,10 @@ package com.walkersorlie.restservice.Assembler;
 
 import com.walkersorlie.restservice.Controller.HourlyDataBlockController;
 import com.walkersorlie.restservice.DataBlock.HourlyDataBlock;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -16,20 +20,31 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HourlyDataBlockModelAssembler implements RepresentationModelAssembler<HourlyDataBlock, EntityModel<HourlyDataBlock>> {
-
+    
     @Override
-    public EntityModel<HourlyDataBlock> toModel(HourlyDataBlock HourlyDataBlock) {
-
-        return EntityModel.of(HourlyDataBlock,
-                linkTo(methodOn(HourlyDataBlockController.class).specific(HourlyDataBlock.getId())).withSelfRel(),
-                linkTo(methodOn(HourlyDataBlockController.class).all()).withRel("Hourly_collection"));
-    }
-
-    public EntityModel<HourlyDataBlock> toModelLatest(HourlyDataBlock HourlyDataBlock) {
-
-        return EntityModel.of(HourlyDataBlock,
+    public EntityModel<HourlyDataBlock> toModel(HourlyDataBlock hourlyDataBlock) {
+        if (hourlyDataBlock.equals(HourlyDataBlockController.LATEST)) {
+            return EntityModel.of(hourlyDataBlock,
+                    linkTo(methodOn(HourlyDataBlockController.class).specific(hourlyDataBlock.getId())).withSelfRel(),
+                    linkTo(methodOn(HourlyDataBlockController.class).all()).withRel("daily_collection"),
+                    linkTo(methodOn(HourlyDataBlockController.class).latest()).withSelfRel());
+        }
+        return EntityModel.of(hourlyDataBlock,
                 linkTo(methodOn(HourlyDataBlockController.class).latest()).withSelfRel(),
-                linkTo(methodOn(HourlyDataBlockController.class).specific(HourlyDataBlock.getId())).withSelfRel(),
-                linkTo(methodOn(HourlyDataBlockController.class).all()).withRel("Hourly_collection"));
+                linkTo(methodOn(HourlyDataBlockController.class).specific(hourlyDataBlock.getId())).withSelfRel());
+    }
+    
+    
+    @Override
+    public CollectionModel<EntityModel<HourlyDataBlock>> toCollectionModel(Iterable<? extends HourlyDataBlock> entities) {
+        Iterator itr = entities.iterator();
+        List<EntityModel<HourlyDataBlock>> list = new ArrayList();
+        
+        while(itr.hasNext()) {
+            list.add(toModel((HourlyDataBlock)itr.next()));
+        }
+        
+        CollectionModel<EntityModel<HourlyDataBlock>> collection = new CollectionModel<>(list);
+        return collection;
     }
 }

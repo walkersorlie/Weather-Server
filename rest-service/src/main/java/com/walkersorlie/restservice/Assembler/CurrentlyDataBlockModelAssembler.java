@@ -7,6 +7,10 @@ package com.walkersorlie.restservice.Assembler;
 
 import com.walkersorlie.restservice.Controller.CurrentlyDataBlockController;
 import com.walkersorlie.restservice.DataBlock.CurrentlyDataBlock;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -33,5 +37,18 @@ public class CurrentlyDataBlockModelAssembler implements RepresentationModelAsse
         return EntityModel.of(currentlyDataBlock,
                 linkTo(methodOn(CurrentlyDataBlockController.class).specific(currentlyDataBlock.getId())).withSelfRel(),
                 linkTo(methodOn(CurrentlyDataBlockController.class).all()).withRel("currently_collection"));
+    }
+    
+    @Override
+    public CollectionModel<EntityModel<CurrentlyDataBlock>> toCollectionModel(Iterable<? extends CurrentlyDataBlock> entities) {
+        Iterator itr = entities.iterator();
+        List<EntityModel<CurrentlyDataBlock>> list = new ArrayList();
+        
+        while(itr.hasNext()) {
+            list.add(toModel((CurrentlyDataBlock)itr.next()));
+        }
+        
+        CollectionModel<EntityModel<CurrentlyDataBlock>> collection = new CollectionModel<>(list);
+        return collection;
     }
 }
