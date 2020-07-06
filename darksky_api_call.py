@@ -14,9 +14,6 @@ def unix_timestamp_to_local_time(unix_timestamp):
 def local_timestamp_to_utc_timestamp(local_timestamp):
     utc_datetime = datetime.fromtimestamp(local_timestamp, timezone.utc)
     utc_dt = datetime.fromtimestamp(local_timestamp, pytz.utc)
-    # return utc_datetime.astimezone(timezone.utc).replace(tzinfo=None).timestamp()
-    # print(utc_dt)
-    # print(utc_dt.timestamp())
     return utc_dt.timestamp()
 
 def make_api_request():
@@ -31,30 +28,15 @@ def make_api_request():
     return requests.get(url, headers=headers)
 
 
-if not os.path.isfile('darksky_test_info.json'):
-    response = make_api_request()
 
-    with open('darksky_test_info.json', 'w') as file:
-        file.write(json.dumps(response.json()))
-
-
-with open('darksky_test_info.json', 'r') as myfile:
-    data = json.loads(myfile.read())
-
+response = make_api_request()
+data = response.json()
 
 
 user_password = os.environ['MONGODB_ATLAS_USER_PASSWORD']
 db_url = f'mongodb+srv://walker:{user_password}@weather-server-y8sjh.mongodb.net/weather_server?retryWrites=true&w=majority'
-
-# db_url = 'mongodb://localhost:27017'
 client = MongoClient(db_url)
 db = client.weather_server
-
-
-collection_currently = db.collection_weather_currently
-
-data_point_currently = data['currently']
-data_point_currently['time'] = local_timestamp_to_utc_timestamp(data_point_currently['time'])
 
 
 
@@ -65,8 +47,6 @@ Only include today and the next 4 days
 """
 days_data_block = []
 for x, day in enumerate(data['daily']['data']):
-    # print(datetime.utcfromtimestamp(day['time']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
-    # print(unix_timestamp_to_local_time(day['time']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
     if x > 4:
         break
 
@@ -75,18 +55,6 @@ for x, day in enumerate(data['daily']['data']):
 
 collection_daily = db.collection_weather_daily
 
-
-dt = datetime.now().astimezone()
-# print(dt.strftime("%Y-%m-%d %H:%M:%S (%Z)"))
-dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
-# print(dt.strftime("%Y-%m-%d %H:%M:%S (%Z)"))
-# print(dt.timestamp())
-dt_utc = dt.astimezone(timezone.utc).replace(tzinfo=None)
-# print(dt_utc)
-# print(dt_utc.timestamp())
-
-# for doc in collection_daily.find({"time": {"$lt": dt_utc.timestamp()}}):
-#     print(unix_timestamp_to_local_time(doc['time']).strftime("%Y-%m-%d %H:%M:%S (%Z)"))
 
 
 """
@@ -113,12 +81,17 @@ if 'alerts' in data:
     data['alerts']['time'] = local_timestamp_to_utc_timestamp(data['alerts']['time'])
 
     collection_alerts = db.collection_alerts
-    # collection_alerts_result = collection_alerts.insert_one(data['alerts']).inserted_id
+    collection_alerts_result = collection_alerts.insert_one(data['alerts']).inserted_id
 
 
-# document_id_currently = collection_currently.insert_one(data_point_currently).inserted_id
-# collection_daily_result = collection_daily.insert_many(days_data_block)
-# collection_hourly_result = collection_hourly.insert_many(hours_data_block)
+
+data_point_currently = data['currently']
+data_point_currently['time'] = local_timestamp_to_utc_timestamp(data_point_currently['time'])
+
+collection_currently = db.collection_weather_currently
+document_id_currently = collection_currently.insert_one(data_point_currently).inserted_id
+collection_daily_result = collection_daily.insert_many(days_data_block)
+collection_hourly_result = collection_hourly.insert_many(hours_data_block)
 
 
 client.close()
