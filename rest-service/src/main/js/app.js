@@ -3,7 +3,7 @@ const ReactDOM = require('react-dom');
 const client = require('./client');
 
 const follow = require('./follow'); // function to hop multiple links by "rel"
-const root = '/api';
+const root = '/api/currently_collection_pages';
 
 
 class App extends React.Component {

@@ -113,12 +113,12 @@ if 'alerts' in data:
     data['alerts']['time'] = local_timestamp_to_utc_timestamp(data['alerts']['time'])
 
     collection_alerts = db.collection_alerts
-    # collection_alerts_result = collection_alerts.insert_one(data['alerts']).inserted_id
+    collection_alerts_result = collection_alerts.insert_one(data['alerts']).inserted_id
 
 
-# document_id_currently = collection_currently.insert_one(data_point_currently).inserted_id
-# collection_daily_result = collection_daily.insert_many(days_data_block)
-# collection_hourly_result = collection_hourly.insert_many(hours_data_block)
+document_id_currently = collection_currently.insert_one(data_point_currently).inserted_id
+collection_daily_result = collection_daily.insert_many(days_data_block)
+collection_hourly_result = collection_hourly.insert_many(hours_data_block)
 
 
 client.close()

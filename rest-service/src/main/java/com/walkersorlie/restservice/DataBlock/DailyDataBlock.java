@@ -61,7 +61,10 @@ public class DailyDataBlock {
     private final long apparentTemperatureMinTime;
     private final double apparentTemperatureMax;
     private final long apparentTemperatureMaxTime;
-
+    
+    
+    // precipAccumulation is not included in blocks (maybe because it's summer???)
+    // precipIntensityMaxTime not included if precipProbability is 0
     public DailyDataBlock(String id, long time, String summary, long sunriseTime, long sunsetTime, double moonPhase,
             double precipIntensity, double precipIntensityMax, long precipIntensityMaxTime, double precipProbability,
             String precipType, double temperatureHigh, long temperatureHighTime, double temperatureLow, long temperatureLowTime,
@@ -77,11 +80,20 @@ public class DailyDataBlock {
         this.sunriseTime = sunriseTime;
         this.sunsetTime = sunsetTime;
         this.moonPhase = moonPhase;
-        this.precipIntensity = precipIntensity;
-        this.precipIntensityMax = precipIntensityMax;
-        this.precipIntensityMaxTime = precipIntensityMaxTime;
         this.precipProbability = precipProbability;
-        this.precipType = precipType;
+        
+        if (precipProbability != 0) {
+            this.precipIntensity = precipIntensity;
+            this.precipIntensityMax = precipIntensityMax;
+            this.precipIntensityMaxTime = precipIntensityMaxTime;
+            this.precipType = precipType;
+        }
+        else {
+            this.precipIntensity = 0;
+            this.precipIntensityMax = 0;
+            this.precipIntensityMaxTime = 0;
+            this.precipType = "None";
+        }
         this.temperatureHigh = temperatureHigh;
         this.temperatureHighTime = temperatureHighTime;
         this.temperatureLow = temperatureLow;
