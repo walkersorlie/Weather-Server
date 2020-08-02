@@ -3,14 +3,14 @@ const ReactDOM = require('react-dom');
 const client = require('./client');
 
 const follow = require('./follow'); // function to hop multiple links by "rel"
-const root = '/api/currently_collection_pages';
+const root = '/api/';
 
 
 class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {collectionCurrently: [], pageSize: 2, links: {}};
+        this.state = {collectionCurrently: [], pageSize: 4, links: {}};
         this.updatePageSize = this.updatePageSize.bind(this);
         this.onNavigate = this.onNavigate.bind(this);
     }
@@ -31,7 +31,6 @@ class App extends React.Component {
         }).done(collectionCurrently => {
             this.setState({
                 collectionCurrently: collectionCurrently.entity._embedded.collection_currently,
-                attributes: Object.keys(this.schema.properties),
                 pageSize: pageSize,
                 links: collectionCurrently.entity._links});
         });
@@ -44,8 +43,7 @@ class App extends React.Component {
     onNavigate(navUri) {
         client({method: 'GET', path: navUri}).done(collectionCurrently => {
             this.setState({
-                employees: collectionCurrently.entity._embedded.collection_currently,
-                attributes: this.state.attributes,
+                collectionCurrently: collectionCurrently.entity._embedded.collection_currently,
                 pageSize: this.state.pageSize,
                 links: collectionCurrently.entity._links
             });

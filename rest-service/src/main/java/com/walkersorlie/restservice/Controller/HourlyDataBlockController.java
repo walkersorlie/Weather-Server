@@ -54,22 +54,22 @@ public class HourlyDataBlockController {
         return assembler.toModel(result);
     }
 
-    @GetMapping("/api/hourly_collection")
-    public CollectionModel<EntityModel<HourlyDataBlock>> all() {
+    @GetMapping("/api/hourly_collection_all_old")
+    public CollectionModel<EntityModel<HourlyDataBlock>> allOld() {
         List<EntityModel<HourlyDataBlock>> hourlyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
-        return CollectionModel.of(hourlyBlockDocuments, linkTo(methodOn(HourlyDataBlockController.class).all()).withSelfRel());
+        return CollectionModel.of(hourlyBlockDocuments, linkTo(methodOn(HourlyDataBlockController.class).allOld()).withSelfRel());
     }
 
     
-    @GetMapping("/api/hourly_collection_pages")
-    public PagedModel<EntityModel<HourlyDataBlock>> allPages(Pageable pageable, PagedResourcesAssembler<HourlyDataBlock> pagedAssembler) 
+    @GetMapping("/api/hourly_collection")
+    public PagedModel<EntityModel<HourlyDataBlock>> all(Pageable pageable, PagedResourcesAssembler<HourlyDataBlock> pagedAssembler) 
     {
         Page<HourlyDataBlock> page = repository.findAllBy(pageable);
         PagedModel<EntityModel<HourlyDataBlock>> pagedModel = pagedAssembler.toModel(page, assembler, 
-                linkTo(methodOn(HourlyDataBlockController.class).allPages(pageable, pagedAssembler)).withSelfRel());
+                linkTo(methodOn(HourlyDataBlockController.class).all(pageable, pagedAssembler)).withSelfRel());
          
         return pagedModel;
     }

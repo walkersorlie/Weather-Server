@@ -74,9 +74,9 @@ public class CurrentlyDataBlockController {
         return assembler.toModel(result);
     }
 
-    @GetMapping("/api/currently_collection")
-    public CollectionModel<EntityModel<CurrentlyDataBlock>> all() {
-        List<EntityModel<CurrentlyDataBlock>> currentlyBlockDocuments = repository.findAllBy().stream()
+    @GetMapping("/api/currently_collection_all_old")
+    public CollectionModel<EntityModel<CurrentlyDataBlock>> allOld() {
+        List<EntityModel<CurrentlyDataBlock>> currentlyBlockDocuments = repository.findAll().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
@@ -84,23 +84,23 @@ public class CurrentlyDataBlockController {
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
-        return CollectionModel.of(currently, linkTo(methodOn(CurrentlyDataBlockController.class).all()).withSelfRel());
+        return CollectionModel.of(currently, linkTo(methodOn(CurrentlyDataBlockController.class).allOld()).withSelfRel());
     }
     
-    @GetMapping("/api/currently_collection_pages")
-    public PagedModel<EntityModel<CurrentlyDataBlock>> allPages(Pageable pageable, PagedResourcesAssembler<CurrentlyDataBlock> pagedAssembler) 
+    @GetMapping("/api/currently_collection")
+    public PagedModel<EntityModel<CurrentlyDataBlock>> all(Pageable pageable, PagedResourcesAssembler<CurrentlyDataBlock> pagedAssembler) 
     {
         Page<CurrentlyDataBlock> page = repository.findAllBy(pageable);
-        
-        CollectionModel<EntityModel<CurrentlyDataBlock>> coll = assembler.toCollectionModel(page);
-        PagedModel.PageMetadata metadata = new PagedModel.PageMetadata((long)page.getSize(), (long)page.getNumber(), page.getTotalElements());
-         
+        System.out.println(page.getPageable());
+//        CollectionModel<EntityModel<CurrentlyDataBlock>> coll = assembler.toCollectionModel(page);
+//        PagedModel.PageMetadata metadata = new PagedModel.PageMetadata((long)page.getSize(), (long)page.getNumber(), page.getTotalElements());
+//         
 //        PagedModel<EntityModel<CurrentlyDataBlock>> pagedModel = PagedModel.of(coll.iterator(),metadata, 
 //                linkTo(methodOn(CurrentlyDataBlockController.class).allPagesTest(pageable, pagedAssembler)).withSelfRel());
         
 
         PagedModel<EntityModel<CurrentlyDataBlock>> pagedModel = pagedAssembler.toModel(page, assembler, 
-                linkTo(methodOn(CurrentlyDataBlockController.class).allPages(pageable, pagedAssembler)).withSelfRel());
+                linkTo(methodOn(CurrentlyDataBlockController.class).all(pageable, pagedAssembler)).withSelfRel());
          
         return pagedModel;
     }

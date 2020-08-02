@@ -21,10 +21,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  */
 
 @RepositoryRestResource(collectionResourceRel = "collection_currently", path = "currently_collection")
-public interface CurrentlyDataBlockRepository extends MongoRepository<CurrentlyDataBlock, String> {
-    
-    @Query(sort = "{ time: -1 }")
-    List<CurrentlyDataBlock> findAllBy();
+public interface CurrentlyDataBlockRepository extends MongoRepository<CurrentlyDataBlock, String> {   
     
     @Query(sort = "{time: -1}")
     Page<CurrentlyDataBlock> findAllBy(Pageable p);
