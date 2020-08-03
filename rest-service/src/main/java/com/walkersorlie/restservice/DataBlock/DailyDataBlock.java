@@ -65,6 +65,7 @@ public class DailyDataBlock {
     
     // precipAccumulation is not included in blocks (maybe because it's summer???)
     // precipIntensityMaxTime not included if precipProbability is 0
+    // use Optional???
     public DailyDataBlock(String id, long time, String summary, long sunriseTime, long sunsetTime, double moonPhase,
             double precipIntensity, double precipIntensityMax, long precipIntensityMaxTime, double precipProbability,
             String precipType, double temperatureHigh, long temperatureHighTime, double temperatureLow, long temperatureLowTime,
