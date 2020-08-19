@@ -76,14 +76,18 @@ collection_hourly = db.collection_weather_hourly
 """
 Alerts data block, if present
 """
+alerts_block = []
+collection_alerts_result = []
 if 'alerts' in data:
-    print(json_dumps(data['alerts'], indent=2))
-    data['alerts']['time'] = local_timestamp_to_utc_timestamp(data['alerts']['time'])
+    for alert in data['alerts']:
+        # print(json.dumps(alert, indent=2))
+        alert['time'] = local_timestamp_to_utc_timestamp(alert['time'])
+        alert['expires'] = local_timestamp_to_utc_timestamp(alert['expires'])
+        alerts_block.append(alert)
+
 
     collection_alerts = db.collection_alerts
-    collection_alerts_result = collection_alerts.insert_one(data['alerts']).inserted_id
-
-
+    collection_alerts_result = collection_alerts.insert_many(alerts_block)
 
 data_point_currently = data['currently']
 data_point_currently['time'] = local_timestamp_to_utc_timestamp(data_point_currently['time'])
