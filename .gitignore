@@ -17,7 +17,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+/lib/
 lib64/
 parts/
 sdist/
@@ -109,10 +109,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/rest-service/node/
-/rest-service/node_modules/
-/rest-service/package-lock.json
-/rest-service/src/main/resources/static/built/
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
