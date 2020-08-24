@@ -1,0 +1,4 @@
+<div class="phx-hero">
+  <h2>Template for specific data point</h2>
+  <p><%= @currently %></p>
+</div>
