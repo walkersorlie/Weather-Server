@@ -23,7 +23,6 @@ defmodule ElixirServerWeb do
 
       import Plug.Conn
       import ElixirServerWeb.Gettext
-      import ElixirServer.CurrentlyDataReprModule
       alias ElixirServerWeb.Router.Helpers, as: Routes
     end
   end

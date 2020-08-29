@@ -1,3 +1,5 @@
 <div class="phx-hero">
   <h2>This is the "weather currently" page</h2>
+
+  <div><%= @currently_blocks %></dv>
 </div>

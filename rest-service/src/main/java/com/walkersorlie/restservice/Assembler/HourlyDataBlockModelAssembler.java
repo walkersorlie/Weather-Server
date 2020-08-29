@@ -30,12 +30,12 @@ public class HourlyDataBlockModelAssembler implements RepresentationModelAssembl
         if (hourlyDataBlock.equals(HourlyDataBlockController.LATEST)) {
             return EntityModel.of(hourlyDataBlock,
                     linkTo(methodOn(HourlyDataBlockController.class).specific(hourlyDataBlock.getId())).withSelfRel(),
-                    linkTo(methodOn(HourlyDataBlockController.class).all(PageRequest.of(0, 4), pagedAssembler)).withRel("daily_collection"),
+                    linkTo(methodOn(HourlyDataBlockController.class).all(PageRequest.of(0, 4), pagedAssembler)).withRel("hourly_collection"),
                     linkTo(methodOn(HourlyDataBlockController.class).latest()).withSelfRel());
         }
         return EntityModel.of(hourlyDataBlock,
                 linkTo(methodOn(HourlyDataBlockController.class).specific(hourlyDataBlock.getId())).withSelfRel(),
-                linkTo(methodOn(HourlyDataBlockController.class).all(PageRequest.of(0, 4), pagedAssembler)).withRel("daily_collection"));
+                linkTo(methodOn(HourlyDataBlockController.class).all(PageRequest.of(0, 4), pagedAssembler)).withRel("hourly_collection"));
     }
     
     

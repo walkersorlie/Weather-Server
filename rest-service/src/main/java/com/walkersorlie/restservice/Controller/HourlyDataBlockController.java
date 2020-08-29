@@ -42,11 +42,18 @@ public class HourlyDataBlockController {
 
     @GetMapping("/api/hourly_collection/latest")
     public EntityModel<HourlyDataBlock> latest() {
+        HourlyDataBlock checkLatest = getLatestHourlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+        
         return assembler.toModel(LATEST);
     }
 
     @GetMapping("/api/hourly_collection/{id}")
     public EntityModel<HourlyDataBlock> specific(@PathVariable String id) {
+        HourlyDataBlock checkLatest = getLatestHourlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
 
         HourlyDataBlock result = repository.findById(id)
                 .orElseThrow(() -> new HourlyDataBlockNotFoundException(id));
@@ -56,6 +63,10 @@ public class HourlyDataBlockController {
 
     @GetMapping("/api/hourly_collection_all_old")
     public CollectionModel<EntityModel<HourlyDataBlock>> allOld() {
+        HourlyDataBlock checkLatest = getLatestHourlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+        
         List<EntityModel<HourlyDataBlock>> hourlyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -65,8 +76,11 @@ public class HourlyDataBlockController {
 
     
     @GetMapping("/api/hourly_collection")
-    public PagedModel<EntityModel<HourlyDataBlock>> all(Pageable pageable, PagedResourcesAssembler<HourlyDataBlock> pagedAssembler) 
-    {
+    public PagedModel<EntityModel<HourlyDataBlock>> all(Pageable pageable, PagedResourcesAssembler<HourlyDataBlock> pagedAssembler) {
+        HourlyDataBlock checkLatest = getLatestHourlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+    
         Page<HourlyDataBlock> page = repository.findAllBy(pageable);
         PagedModel<EntityModel<HourlyDataBlock>> pagedModel = pagedAssembler.toModel(page, assembler, 
                 linkTo(methodOn(HourlyDataBlockController.class).all(pageable, pagedAssembler)).withSelfRel());

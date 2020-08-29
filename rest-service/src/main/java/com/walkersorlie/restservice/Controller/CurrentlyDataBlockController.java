@@ -61,12 +61,18 @@ public class CurrentlyDataBlockController {
 //        System.out.println(latest.getTime());
 //        Instant instant = Instant.ofEpochSecond(latest.getTime());
 //        System.out.println(instant);
+        CurrentlyDataBlock checkLatest = getLatestCurrentlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
 
         return assembler.toModel(LATEST);
     }
 
     @GetMapping("/api/currently_collection/{id}")
     public EntityModel<CurrentlyDataBlock> specific(@PathVariable String id) {
+        CurrentlyDataBlock checkLatest = getLatestCurrentlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
 
         CurrentlyDataBlock result = repository.findById(id)
                 .orElseThrow(() -> new CurrentlyDataBlockNotFoundException(id));
@@ -76,6 +82,10 @@ public class CurrentlyDataBlockController {
 
     @GetMapping("/api/currently_collection_all_old")
     public CollectionModel<EntityModel<CurrentlyDataBlock>> allOld() {
+        CurrentlyDataBlock checkLatest = getLatestCurrentlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+        
         List<EntityModel<CurrentlyDataBlock>> currentlyBlockDocuments = repository.findAll().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -88,10 +98,13 @@ public class CurrentlyDataBlockController {
     }
     
     @GetMapping("/api/currently_collection")
-    public PagedModel<EntityModel<CurrentlyDataBlock>> all(Pageable pageable, PagedResourcesAssembler<CurrentlyDataBlock> pagedAssembler) 
-    {
+    public PagedModel<EntityModel<CurrentlyDataBlock>> all(Pageable pageable, PagedResourcesAssembler<CurrentlyDataBlock> pagedAssembler) {
+        CurrentlyDataBlock checkLatest = getLatestCurrentlyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+        
         Page<CurrentlyDataBlock> page = repository.findAllBy(pageable);
-        System.out.println(page.getPageable());
+//        System.out.println(page.getPageable());
 //        CollectionModel<EntityModel<CurrentlyDataBlock>> coll = assembler.toCollectionModel(page);
 //        PagedModel.PageMetadata metadata = new PagedModel.PageMetadata((long)page.getSize(), (long)page.getNumber(), page.getTotalElements());
 //         

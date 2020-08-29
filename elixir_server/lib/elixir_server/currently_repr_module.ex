@@ -1,4 +1,4 @@
-defmodule CurrentlyDataBlock do
+defmodule ElixirServer.CurrentlyReprModule do
   @derive [Poison.Encoder]
 
   defstruct [:id, :time, :summary, :icon, :nearestStormDistance,

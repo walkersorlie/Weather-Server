@@ -1,8 +1,19 @@
 defmodule ElixirServerWeb.CurrentlyView do
   use ElixirServerWeb, :view
+  use ElixirServer, :repr_module
+  
+  alias ElixirServerWeb.CurrentlyView
 
 
-  def render("specific.html", %{currently: currently}) do
-    %{data: render_one(currently, ElixirServerWeb.PageView, "currently.json")}  # probs have to change "currently.json"
+  def render("index.json", %{currently_blocks: currently_blocks}) do
+    render_many(currently_blocks, CurrentlyView, "currently.json")
+  end
+
+  def render("show.json", %{currently: currently}) do
+    render_one(currently, CurrentlyView, "currently.json")
+  end
+
+  def render("currently.json", %{currently: currently}) do
+    %{apparent_temp: currently.apparentTemperature}
   end
 end

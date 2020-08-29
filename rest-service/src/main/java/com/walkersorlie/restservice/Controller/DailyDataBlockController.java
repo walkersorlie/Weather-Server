@@ -41,11 +41,18 @@ public class DailyDataBlockController {
 
     @GetMapping("/api/daily_collection/latest")
     public EntityModel<DailyDataBlock> latest() {
+        DailyDataBlock checkLatest = getLatestDailyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+        
         return assembler.toModel(LATEST);
     }
 
     @GetMapping("/api/daily_collection/{id}")
     public EntityModel<DailyDataBlock> specific(@PathVariable String id) {
+        DailyDataBlock checkLatest = getLatestDailyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
 
         DailyDataBlock result = repository.findById(id)
                 .orElseThrow(() -> new DailyDataBlockNotFoundException(id));
@@ -53,22 +60,29 @@ public class DailyDataBlockController {
         return assembler.toModel(result);
     }
 
-    @GetMapping("/api/daily_collection")
-    public CollectionModel<EntityModel<DailyDataBlock>> all() {
+    @GetMapping("/api/daily_collection_all_old")
+    public CollectionModel<EntityModel<DailyDataBlock>> allOld() {
+        DailyDataBlock checkLatest = getLatestDailyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+        
         List<EntityModel<DailyDataBlock>> dailyBlockDocuments = repository.findAllBy().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
         
-        return CollectionModel.of(dailyBlockDocuments, linkTo(methodOn(DailyDataBlockController.class).all()).withSelfRel());
+        return CollectionModel.of(dailyBlockDocuments, linkTo(methodOn(DailyDataBlockController.class).allOld()).withSelfRel());
     }
     
-    @GetMapping("/api/daily_collection_pages")
-    public PagedModel<EntityModel<DailyDataBlock>> allPages(Pageable pageable, PagedResourcesAssembler<DailyDataBlock> pagedAssembler) 
-    {
+    @GetMapping("/api/daily_collection")
+    public PagedModel<EntityModel<DailyDataBlock>> all(Pageable pageable, PagedResourcesAssembler<DailyDataBlock> pagedAssembler) {
+        DailyDataBlock checkLatest = getLatestDailyDataBlock();
+        if (!checkLatest.equals(LATEST))
+            LATEST = checkLatest;
+    
         Page<DailyDataBlock> page = repository.findAllBy(pageable);
         
         PagedModel<EntityModel<DailyDataBlock>> pagedModel = pagedAssembler.toModel(page, assembler, 
-                linkTo(methodOn(DailyDataBlockController.class).allPages(pageable, pagedAssembler)).withSelfRel());
+                linkTo(methodOn(DailyDataBlockController.class).all(pageable, pagedAssembler)).withSelfRel());
          
         return pagedModel;
     }

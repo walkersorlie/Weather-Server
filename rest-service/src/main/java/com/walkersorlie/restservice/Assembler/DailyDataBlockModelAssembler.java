@@ -5,6 +5,8 @@ import com.walkersorlie.restservice.DataBlock.DailyDataBlock;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -22,16 +24,17 @@ public class DailyDataBlockModelAssembler implements RepresentationModelAssemble
 
     @Override
     public EntityModel<DailyDataBlock> toModel(DailyDataBlock dailyDataBlock) {
+        PagedResourcesAssembler<DailyDataBlock> pagedAssembler = new PagedResourcesAssembler(null, null);
         
         if (dailyDataBlock.equals(DailyDataBlockController.LATEST)) {
             return EntityModel.of(dailyDataBlock,
                     linkTo(methodOn(DailyDataBlockController.class).specific(dailyDataBlock.getId())).withSelfRel(),
-                    linkTo(methodOn(DailyDataBlockController.class).all()).withRel("daily_collection"),
+                    linkTo(methodOn(DailyDataBlockController.class).all(PageRequest.of(0, 4), pagedAssembler)).withRel("daily_collection"),
                     linkTo(methodOn(DailyDataBlockController.class).latest()).withSelfRel());
         }
         return EntityModel.of(dailyDataBlock,
-                linkTo(methodOn(DailyDataBlockController.class).latest()).withSelfRel(),
-                linkTo(methodOn(DailyDataBlockController.class).specific(dailyDataBlock.getId())).withSelfRel());
+                linkTo(methodOn(DailyDataBlockController.class).specific(dailyDataBlock.getId())).withSelfRel(),
+                linkTo(methodOn(DailyDataBlockController.class).all(PageRequest.of(0, 4), pagedAssembler)).withRel("daily_collection"));
     }
     
     
