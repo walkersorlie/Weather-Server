@@ -17,8 +17,8 @@ defmodule ElixirServerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/currently", CurrentlyController, :index
-    get "/currently/:currently_id", CurrentlyController, :show
+    # get "/currently", CurrentlyController, :index
+    # get "/currently/:currently_id", CurrentlyController, :show
 
     resources "/currently", CurrentlyController, only: [:index, :show]
   end

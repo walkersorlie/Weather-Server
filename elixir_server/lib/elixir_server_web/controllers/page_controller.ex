@@ -11,10 +11,9 @@ defmodule ElixirServerWeb.PageController do
 
     case HTTPoison.get(url) do
       {:ok, %{status_code: 200, body: body}} ->
-        body
-        |> Poison.decode(keys: :atoms, as: %CurrentlyReprModule{})
+        currently_blocks = Poison.decode(body, as: %CurrentlyReprModule.CurrentlyBlock{})
 
-        render(conn, "index.html", body: body)
+        render(conn, "index.json", currently_blocks: currently_blocks)
     end
   end
 end

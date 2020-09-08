@@ -1,7 +1,7 @@
 defmodule ElixirServerWeb.CurrentlyView do
   use ElixirServerWeb, :view
   use ElixirServer, :repr_module
-  
+
   alias ElixirServerWeb.CurrentlyView
 
 
@@ -14,6 +14,6 @@ defmodule ElixirServerWeb.CurrentlyView do
   end
 
   def render("currently.json", %{currently: currently}) do
-    %{apparent_temp: currently.apparentTemperature}
+    %{currently: currently}
   end
 end
